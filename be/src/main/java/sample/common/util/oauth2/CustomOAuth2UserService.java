@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import sample.common.util.oauth2.dto.KaKaoResponse;
+import sample.common.util.oauth2.dto.OAuth2Response;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +22,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         log.info("CustomOAuth2UserService :: {}", oAuth2User);
         log.info("oAuthUser.getAttributes :: {}", oAuth2User.getAttributes());
+
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        OAuth2Response oAuth2Response = null;
+
+        if (registrationId.equals("kakao")) {
+            oAuth2Response = new KaKaoResponse(oAuth2User.getAttributes());
+        } else {
+            throw new OAuth2AuthenticationException("지원하지 않는 OAuth2 Provider 입니다.");
+        }
 
         return super.loadUser(userRequest);
     }
