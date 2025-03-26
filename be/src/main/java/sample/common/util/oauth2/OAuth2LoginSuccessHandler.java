@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        log.info("successhandler로 왔니?");
-        super.onAuthenticationSuccess(request, response, chain, authentication);
+        log.info("일로 오니? successHandler로??");
+        super.onAuthenticationSuccess(request, response, authentication);
     }
 
 }
