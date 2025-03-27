@@ -21,14 +21,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 생성
     private Long userId;
+
     @Column(nullable = false, unique = true)
     private String email; // 카카오 이메일
+
     @Column(nullable = false)
     private String nickname;
+
     @Column(nullable = false)
     private String profileImage;
+
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -44,10 +44,10 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // oauth 로그인 관련, 회원가입, 로그인 체크 - permit all
                         .requestMatchers(
                                 "/oauth2/authorization/kakao", // 카카오 로그인 요청
-                                "/login/oauth2/code/**") // 카카오 인증 콜백
+                                "/login/oauth2/code/**", // 카카오 인증 콜백
+                                "/api/v1/refresh-token")  // refresh token
                         .permitAll()
                         .anyRequest().authenticated() // 허가된 사람만 인가
                 )
