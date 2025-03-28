@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sample.common.util.oauth2.dto.CustomOAuth2User;
+import sample.domain.user.application.dto.UserResponseDto;
 import sample.domain.user.domain.User;
 
 @RestController
@@ -18,11 +19,14 @@ public class UserController {
 
     // 로그인된 유저 정보를 확인하는 api
     @GetMapping("/me")
-    public ResponseEntity<User> getMyInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
-
+    public ResponseEntity<UserResponseDto> getMyInfo(@AuthenticationPrincipal CustomOAuth2User customOAuth2User){
         User user = customOAuth2User.getUser();
-        log.info("일로 왔나??");
-        return ResponseEntity.ok(user);
+
+        UserResponseDto userResponseDto = UserResponseDto.builder()
+                .userId(user.getUserId())
+                .role(user.getRole().getName())
+                .build();
+        return ResponseEntity.ok(userResponseDto);
     }
 
 }

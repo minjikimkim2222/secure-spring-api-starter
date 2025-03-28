@@ -46,6 +46,19 @@ public class User {
         this.role = role;
     }
 
+    public static User createUserWithId(Long userId, String email, String nickname, String profileImage, SocialType socialType, Role role){
+        User user = User.builder()
+                .email(email)
+                .nickname(nickname)
+                .profileImage(profileImage)
+                .socialType(socialType)
+                .role(role)
+                .build();
+        user.userId = userId;
+
+        return user;
+    }
+
     // User 도메인 관련 비즈니스 로직 (예: 닉네임 변경)
     public void updateNickname(String nickname){
         this.nickname = nickname;

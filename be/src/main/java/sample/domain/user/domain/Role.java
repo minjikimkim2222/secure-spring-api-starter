@@ -10,4 +10,15 @@ public enum Role {
     ADMIN("ADMIN");
 
     private final String name;
+
+    // Role의 String name -> Role enum으로 변경
+    public static Role fromString(String name){
+        for (Role role : Role.values()){
+            if (role.name.equalsIgnoreCase(name)){
+                return role;
+            }
+        }
+
+        return Role.USER;
+    }
 }

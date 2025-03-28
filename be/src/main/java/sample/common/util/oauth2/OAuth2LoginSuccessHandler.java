@@ -1,5 +1,6 @@
 package sample.common.util.oauth2;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -21,11 +24,13 @@ import sample.domain.token.domain.Token;
 import sample.domain.token.repository.TokenRepository;
 import sample.domain.user.domain.User;
 
+
+
 // 카카오 로그인 성공 시, 콜백 핸들러
 // 1. JWT 토큰 발급
     // - 이때, JWT payload는 보안상 최소한의 정보(userId, role)만 담겠다
 // 2. refreshToken만 DB에 저장
-// 3. 클라이언트에게 쿠키에 JWT토큰(accessToken, refreshToken)을 담아서, 리다이렉트 URL로 보내주기
+// 3. JSON 응답으로, accessToken과 refreshToken 을 반환해준다.
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -60,19 +65,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         Token refreshTokenEntity = Token.toEntity(user, refreshToken, LocalDateTime.now().plusDays(30));
         tokenRepository.save(refreshTokenEntity);
 
-        // 4. 쿠키에 JWT의 acessToken, refreshToken을 담고, redirect url로 전송
-        response.addCookie(createCookie("accessToken", accessToken));
-        response.addCookie(createCookie("refreshToken", refreshToken));
+        // 4. JSON 응답으로, accessToken과 refreshToken 을 반환해준다.
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
 
-        response.sendRedirect("http://localhost:3000/oauth/redirect?status=success");
+        ObjectMapper objectMapper = new ObjectMapper(); // 객체 -> json 문자열로 변환
+        String body = objectMapper.writeValueAsString(
+                Map.of(
+                        "accessToken", accessToken,
+                        "refreshToken", refreshToken
+                )
+        );
+        response.getWriter().write(body);
     }
 
-    private Cookie createCookie(String key, String value){
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setHttpOnly(true); // XSS 공격으로부터 토큰 탈취 방지
-
-        return cookie;
-    }
 
 }
