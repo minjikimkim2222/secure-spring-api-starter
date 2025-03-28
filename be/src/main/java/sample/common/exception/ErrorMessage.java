@@ -5,7 +5,8 @@ public enum ErrorMessage {
     INVALID_INPUT_VALUE("입력값이 올바르지 않습니다.", "g001"),
 
     // auth
-    UNAUTHORIZED("권한이 없습니다", "a001");
+    UNAUTHORIZED("권한이 없습니다", "a001"),
+    COOKIE_NOT_EXIST("쿠키가 존재하지 않습니다", "a002");
 
     private final String message;
     private final String code;

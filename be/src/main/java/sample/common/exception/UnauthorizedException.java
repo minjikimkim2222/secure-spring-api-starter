@@ -8,7 +8,7 @@ public class UnauthorizedException extends RuntimeException {
         this.errorMessage = ErrorMessage.UNAUTHORIZED;
     }
 
-    protected UnauthorizedException(ErrorMessage errorMessage) {
+    public UnauthorizedException(ErrorMessage errorMessage) {
         super(errorMessage.getMessage());
         this.errorMessage = errorMessage;
     }

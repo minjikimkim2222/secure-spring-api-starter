@@ -64,8 +64,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         response.addCookie(createCookie("accessToken", accessToken));
         response.addCookie(createCookie("refreshToken", refreshToken));
 
-        // (프론트 연동, 아직임)
-        //response.sendRedirect("http://localhost:3000/");
+        response.sendRedirect("http://localhost:3000/oauth/redirect?status=success");
     }
 
     private Cookie createCookie(String key, String value){

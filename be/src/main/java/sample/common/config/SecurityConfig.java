@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 import sample.common.util.jwt.JwtAuthorizationFilter;
 import sample.common.util.jwt.JwtUtil;
 import sample.common.util.oauth2.CustomOAuth2UserService;
@@ -22,13 +23,15 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
     private final JwtUtil jwtUtil;
 
+    private final CorsConfigurationSource corsConfigurationSource;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 // CSRF 방어 기능 비활성화 (jwt 토큰을 사용할 것이기에 필요없음)
                 .csrf(AbstractHttpConfigurer::disable)
-                // 폼 로그인 비활성화
-                // .formLogin(AbstractHttpConfigurer::disable)
+                // 시큐리티 폼 로그인 비활성화
+                .formLogin(AbstractHttpConfigurer::disable)
                 // HTTP Basic 인증 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)
                 // oauth2 로그인
@@ -47,9 +50,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/oauth2/authorization/kakao", // 카카오 로그인 요청
                                 "/login/oauth2/code/**", // 카카오 인증 콜백
-                                "/api/v1/refresh-token")  // refresh token
+                                "/api/refresh-token")  // refresh token (토큰 갱신)
                         .permitAll()
-                        .anyRequest().authenticated() // 허가된 사람만 인가
+                        .anyRequest().authenticated() // 그외 요청은 허가된 사람만 인가
                 )
                 // JWTFiler
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
