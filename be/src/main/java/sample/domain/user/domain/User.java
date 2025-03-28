@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Getter
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 생성
-    private Long userId;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email; // 카카오 이메일
@@ -54,7 +54,7 @@ public class User {
                 .socialType(socialType)
                 .role(role)
                 .build();
-        user.userId = userId;
+        user.id = userId;
 
         return user;
     }

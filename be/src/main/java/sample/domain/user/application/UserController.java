@@ -23,7 +23,7 @@ public class UserController {
         User user = customOAuth2User.getUser();
 
         UserResponseDto userResponseDto = UserResponseDto.builder()
-                .userId(user.getUserId())
+                .userId(user.getId())
                 .role(user.getRole().getName())
                 .build();
         return ResponseEntity.ok(userResponseDto);

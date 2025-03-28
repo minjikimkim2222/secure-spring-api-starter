@@ -32,6 +32,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 인증헤더 Bearer가 없다면, 다음 필터로 넘김
         if (header == null || !header.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
+
+            log.info("JwtAuthorizationFilter 1 ");
             return ;
         }
 
@@ -47,6 +49,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             // response status code + msg
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().print("access token expired");
+
+            log.info("JwtAuthorizationFilter 2 ");
             return;
         }
 
@@ -57,6 +61,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             //response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().print("invalid access token");
+
+            log.info("JwtAuthorizationFilter 3 ");
             return;
         }
 
@@ -75,6 +81,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 생성한 인증 정보를 SecurityContext에 설정
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+        log.info("JwtAuthorizationFilter 4 ");
 
         filterChain.doFilter(request, response);
 
