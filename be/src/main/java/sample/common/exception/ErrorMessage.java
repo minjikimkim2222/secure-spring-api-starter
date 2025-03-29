@@ -6,7 +6,10 @@ public enum ErrorMessage {
 
     // auth
     UNAUTHORIZED("권한이 없습니다", "a001"),
-    COOKIE_NOT_EXIST("쿠키가 존재하지 않습니다", "a002");
+
+    // token
+    REFRESH_TOKEN_NOT_FOUND("기존 리프레시 토큰을 찾을 수 없습니다.", "t001"),
+    DOES_NOT_MATCH_REFRESH_TOKEN("기존 리프레시 토큰이 일치하지 않습니다.", "t002");
 
     private final String message;
     private final String code;

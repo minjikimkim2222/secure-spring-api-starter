@@ -48,7 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             User user = User.builder()
                     .email(oAuth2Response.getEmail())
                     .nickname(oAuth2Response.getNickName())
-                    .profileImage(oAuth2Response.getNickName())
+                    .profileImage(oAuth2Response.getProfileImage())
                     .socialType(SocialType.KAKAO)
                     .role(Role.USER) // 일반 유저 설정
                     .build();

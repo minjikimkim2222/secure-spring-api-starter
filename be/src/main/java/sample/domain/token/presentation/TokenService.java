@@ -1,9 +1,13 @@
 package sample.domain.token.presentation;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import sample.common.exception.RefreshTokenNotFoundException;
+import sample.common.exception.TokenBadRequestException;
 import sample.common.util.jwt.JwtUtil;
 import sample.domain.token.domain.Token;
 import sample.domain.token.repository.TokenRepository;
@@ -15,6 +19,7 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public Boolean validateToken(String token, Long userId){
         // DB에서 해당 userId와 일치하는 리프레시토큰을 찾는다.
         Optional<Token> savedToken = tokenRepository.findByUserId(userId);
@@ -39,5 +44,20 @@ public class TokenService {
 
         log.info("여기에 걸렸니 ? -- 4 ");
         return true; // 모든 조건 만족 시, 유효한 토큰
+    }
+
+    @Transactional
+    public void updateRefreshToken(Long userId, String oldRefreshToken, String newRefreshToken){
+        Token token = tokenRepository.findByUserId(userId)
+                .orElseThrow(RefreshTokenNotFoundException::new); // 404
+
+        if (!token.getRefreshToken().equals(oldRefreshToken)){
+            throw new TokenBadRequestException(); // 400
+        }
+
+        // 기존 토큰 삭제 및 새 토큰 저장
+        tokenRepository.delete(token);
+        Token newToken = Token.toEntity(token.getUser(), newRefreshToken, LocalDateTime.now().plusDays(30));
+        tokenRepository.save(newToken);
     }
 }

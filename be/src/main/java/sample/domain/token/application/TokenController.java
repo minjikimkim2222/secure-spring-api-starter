@@ -24,16 +24,19 @@ public class TokenController {
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest request){
         String refreshToken = request.getRefreshToken();
 
-        log.info("일로 오긴 했니?");
         // 리프레시 토큰 검증
         Long userId = jwtUtil.getUserId(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
         // 리프레시 토큰 유효성 검증
         if (tokenService.validateToken(refreshToken, userId)){
-            // 유효한 토큰이라면, 새로운 엑세스 토큰 생성
+            // 유효한 토큰이라면, 새로운 accessToken, refreshToken 생성
             String newAccessToken = jwtUtil.createAccessToken("accessToken", userId, role, 30 * 60 * 1000L);
-            log.info("유효한 토큰이라 엑세스 토큰 생성했어요... ");
+            String newRefreshToken = jwtUtil.createRefreshToken("refreshToken", userId, 30 * 24 * 60 * 60 * 1000L);
+
+            // DB에 새로운 refreshToken으로 교체
+            tokenService.updateRefreshToken(userId, refreshToken, newRefreshToken);
+
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(newAccessToken, refreshToken);
             return ResponseEntity.ok().body(authenticationResponse);
 
